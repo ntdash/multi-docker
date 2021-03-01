@@ -3,14 +3,14 @@ import axios from 'axios';
 
 class Fib extends Component {
   state = {
-    seenIndexes: [],
+    seenIndicies: [],
     values: {},
     index: '',
   };
 
   componentDidMount() {
     this.fetchValues();
-    this.fetchIndexes();
+    this.fetchIndicies();
   }
 
   async fetchValues() {
@@ -18,14 +18,16 @@ class Fib extends Component {
     this.setState({ values: values.data });
   }
 
-  async fetchIndexes() {
-    const seenIndexes = await axios.get('/api/values/all');
-    this.setState({
-      seenIndexes: seenIndexes.data,
-    });
+  async fetchIndicies() {
+    
+    const seenIndicies = (await axios.get('/api/values/all')).data;
+
+    if(seenIndicies instanceof Array)
+      this.setState({ seenIndicies });
   }
 
   handleSubmit = async (event) => {
+
     event.preventDefault();
 
     await axios.post('/api/values', {
@@ -34,8 +36,9 @@ class Fib extends Component {
     this.setState({ index: '' });
   };
 
-  renderSeenIndexes() {
-    return this.state.seenIndexes.map(({ number }) => number).join(', ');
+  renderSeenIndicies() {
+    
+    return this.state.seenIndicies.map( ({ number }) => number).join(', ');
   }
 
   renderValues() {
@@ -64,8 +67,8 @@ class Fib extends Component {
           <button>Submit</button>
         </form>
 
-        <h3>Indexes I have seen:</h3>
-        {this.renderSeenIndexes()}
+        <h3>Indicies I have seen:</h3>
+        {this.renderSeenIndicies()}
 
         <h3>Calculated Values:</h3>
         {this.renderValues()}
